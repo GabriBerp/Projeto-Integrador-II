@@ -8,6 +8,9 @@ public class PoloBase : MonoBehaviour
     private int Level { get; set; }
     [Header("Polo Info")]
     public string poloName;
+    [Header("Upgrade Variable")]
+    public float upgradePrice;
+
 
     public virtual void Awake() {
         Level = 1;    
@@ -31,5 +34,13 @@ public class PoloBase : MonoBehaviour
     public virtual void ShowPoloInfo()
     {
         
+    }
+
+    public virtual void Upgrade()
+    {
+        Level++;
+        GameManager.Instance.money -= upgradePrice;
+        
+        // O resto é os proprios polos que adicionam, seloko mo preguiça.
     }
 }
