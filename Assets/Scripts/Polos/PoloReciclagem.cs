@@ -3,7 +3,7 @@ using UnityEngine;
 public class PoloReciclagem : PoloBase
 {
    [Header("Reciclagem Info")] 
-   [SerializeField] private int maxTrashCapacity;
+   private int maxTrashCapacity;
    [SerializeField] private int _baseMaxTrashCapacity;
    [SerializeField] private float cycleMaxTime;
    public float _cycletime = 0f;
@@ -12,11 +12,16 @@ public class PoloReciclagem : PoloBase
 
     // moneyPerTime = Produção Automática p/ Ciclo
 
+    public override void Awake() {
+        base.Awake();
+        maxTrashCapacity = _baseMaxTrashCapacity;
+    }
+
     void FixedUpdate() {
         if (_cycletime < cycleMaxTime)
         {
             _cycletime += Time.deltaTime;
-            Debug.Log(_cycletime);
+            // Debug.Log(_cycletime);
         }
         else
         {
@@ -53,5 +58,6 @@ public class PoloReciclagem : PoloBase
             ProduceMoneyPerCycle();
             _cycletime = 0f;
         } 
+        // ShowPoloInfo();
     }
 }
