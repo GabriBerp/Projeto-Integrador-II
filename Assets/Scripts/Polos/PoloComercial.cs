@@ -1,17 +1,15 @@
 using UnityEngine;
 
-public class PoloReciclagem : PoloBase
+public class PoloComercial : PoloBase
 {
-   [Header("Reciclagem Info")] 
-   private int maxTrashCapacity;
-   [SerializeField] private int _baseMaxTrashCapacity;
-   [SerializeField] private float _trashPrice;
-
-    // moneyPerTime = Produção Automática p/ Ciclo
+    [Header("Comercial Info")] 
+    private int maxHandWorkCapacity;
+    [SerializeField] private int _baseMaxHandWorkCapacity;
+    [SerializeField] private float _handWorkPrice;
 
     public override void Awake() {
         base.Awake();
-        maxTrashCapacity = _baseMaxTrashCapacity;
+        maxHandWorkCapacity = _baseMaxHandWorkCapacity;
     }
 
     void FixedUpdate() {
@@ -29,19 +27,19 @@ public class PoloReciclagem : PoloBase
 
     public override void ProduceMoneyPerCycle()
     {
-        int trashRemain = GameManager.Instance.trash - maxTrashCapacity;
-        float trashConsumed = maxTrashCapacity;
-        if (trashRemain < 0)
+        int handWorkRemain = GameManager.Instance.handwork - maxHandWorkCapacity;
+        float handWorkConsumed = maxHandWorkCapacity;
+        if (handWorkRemain < 0)
         {
             /*
-            Codigo para garantir que a quantidade coletada de lixo não vai ser maior que a quantidade atual de lixo.
+            Codigo para garantir que a quantidade coletada de lixo não vai ser maior que a quantidade atual de mão de obra.
             */
-            trashConsumed = maxTrashCapacity - (trashRemain * -1f);
+            handWorkConsumed = maxHandWorkCapacity - (handWorkRemain * -1f);
         }
-        moneyPerTime = (int)trashConsumed * _trashPrice;
+        moneyPerTime = handWorkConsumed * _handWorkPrice;
 
         base.ProduceMoneyPerCycle();
-        GameManager.Instance.trash -= (int)trashConsumed; 
+        GameManager.Instance.handwork -= (int)handWorkConsumed; 
         
     }
 

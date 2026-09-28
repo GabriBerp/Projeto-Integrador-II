@@ -5,7 +5,12 @@ public class PoloBase : MonoBehaviour
     [Header("Polo Variables")]
     [SerializeField] protected float moneyPerTime;
     [SerializeField] protected float moneyPerClick;
-    private int Level { get; set; }
+    public TrashGenerator trashGenerator;
+    public int Level { get; set; }
+    [SerializeField] protected float cycleMaxTime;
+    public float _cycletime = 0f;
+    protected float timeReductionPerClick;
+   [SerializeField] protected float _baseTimeReductionPerClick;
     [Header("Polo Info")]
     public string poloName;
     [Header("Upgrade Variable")]
@@ -14,11 +19,7 @@ public class PoloBase : MonoBehaviour
 
     public virtual void Awake() {
         Level = 1;    
-    }
-
-    public virtual void ProduceMoneyPerTime()
-    {
-        GameManager.Instance.money += moneyPerTime;
+        timeReductionPerClick = _baseTimeReductionPerClick;
     }
 
     public virtual void ProduceMoneyPerClick()
@@ -31,6 +32,11 @@ public class PoloBase : MonoBehaviour
         GameManager.Instance.money += moneyPerTime;
     }
 
+    public virtual void ProduceHandWorkPerCycle()
+    {
+        GameManager.Instance.handwork += (int)moneyPerTime;
+    }
+
     public virtual void ShowPoloInfo()
     {
         
@@ -40,7 +46,12 @@ public class PoloBase : MonoBehaviour
     {
         Level++;
         GameManager.Instance.money -= upgradePrice;
-        
+
         // O resto é os proprios polos que adicionam, seloko mo preguiça.
+    }
+
+    public virtual void OnClick()
+    {
+        trashGenerator?.OnClick();
     }
 }
