@@ -19,6 +19,7 @@ public class PoloResidencial : PoloBase
 
     protected override void OnClickEffect()
     {
-        GameManager.Instance.handwork += 1 * Level;
+        float val = 0.5f * Level;
+        GameManager.Instance.handwork += val;
     }
 }

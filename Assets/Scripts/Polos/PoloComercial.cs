@@ -20,9 +20,10 @@ public class PoloComercial : PoloBase
  
     protected override void OnClickEffect()
     {
-        if (GameManager.Instance.handwork > 1 * Level)
+        float val = 0.5f * Level;
+        if (GameManager.Instance.handwork > val)
         {
-            GameManager.Instance.handwork -= 1 * Level;
+            GameManager.Instance.handwork -= val;
             GameManager.Instance.money += MoneyPerClick;
         }
     }

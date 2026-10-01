@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Valores")]
     public float money = 0;
-    public int handwork = 0;
-    public int trash = 0;
+    public float handwork = 0;
+    public float trash = 0;
     public float lifeQuality = 0;
 
     [Header("UI")]
@@ -21,8 +21,6 @@ public class GameManager : MonoBehaviour
 
     [Header ("GameObjects")]
     public GameObject infoPanel;
-
-    public GameObject upgradeButton;
     public PoloBase selectedPolo;
 
     void Awake() {
@@ -44,6 +42,19 @@ public class GameManager : MonoBehaviour
         moneyText.text = money.ToString("0.00");
         handworkText.text = handwork.ToString("0");
         trashText.text = trash.ToString("0");
+    }
+
+    public void UpdateButtonClick()
+    {
+        bool updated = selectedPolo.TryUpgrade();
+        if (updated)
+        {
+            Debug.Log("Debug: " + selectedPolo.gameObject.name + " updated");
+        }
+        else
+        {
+            Debug.Log("Debug: " + selectedPolo.gameObject.name + " cannot be updated");
+        }
     }
 
 }

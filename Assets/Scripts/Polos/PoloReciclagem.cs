@@ -12,7 +12,7 @@ public class PoloReciclagem : PoloBase
  
     protected override void OnCycleComplete()
     {
-        int recycled = Mathf.Min(GameManager.Instance.trash, Capacity); // LR = min(L, QR)
+        float recycled = Mathf.Min(GameManager.Instance.trash, Capacity); // LR = min(L, QR)
         if (recycled <= 0) return;
  
         GameManager.Instance.trash -= recycled;
@@ -26,9 +26,10 @@ public class PoloReciclagem : PoloBase
 
     protected override void OnClickEffect()
     {
-        if (GameManager.Instance.trash > 1 * Level)
+        float val = 0.5f * Level;
+        if (GameManager.Instance.trash > val)
         {
-            GameManager.Instance.trash -= 1 * Level;
+            GameManager.Instance.trash -= val;
             GameManager.Instance.money += MoneyPerClick;
         }
     }

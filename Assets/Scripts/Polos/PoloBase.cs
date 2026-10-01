@@ -69,6 +69,7 @@ public abstract class PoloBase : MonoBehaviour
         if (GameManager.Instance.selectedPolo != this)
         {
             GameManager.Instance.selectedPolo = this;
+            Debug.Log("Debug: GameManager selected object = " + this.gameObject.name);
         }
     }
  
@@ -98,8 +99,8 @@ public abstract class PoloBase : MonoBehaviour
     {
         if (needed <= 0) return 1f;
  
-        int available = GameManager.Instance.handwork;
-        int consumed = Mathf.Min(available, needed);
+        float available = GameManager.Instance.handwork;
+        float consumed = Mathf.Min(available, needed);
         GameManager.Instance.handwork -= consumed;
         return (float)consumed / needed;
     }
