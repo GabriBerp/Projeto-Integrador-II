@@ -5,8 +5,10 @@ public class PoloReciclagem : PoloBase
     [Header("Reciclagem")]
     [SerializeField] private int baseCapacity = 5;     // QbR
     [SerializeField] private float trashPrice = 1f;    // V_l
+    [SerializeField] private float baseClickMoney = 1f; 
  
     public int Capacity => baseCapacity * Level;       // QR = QbR * N
+    public float MoneyPerClick => baseClickMoney + Level;
  
     protected override void OnCycleComplete()
     {
@@ -20,5 +22,14 @@ public class PoloReciclagem : PoloBase
     protected override void OnLevelChanged()
     {
         
+    }
+
+    protected override void OnClickEffect()
+    {
+        if (GameManager.Instance.trash > 1 * Level)
+        {
+            GameManager.Instance.trash -= 1 * Level;
+            GameManager.Instance.money += MoneyPerClick;
+        }
     }
 }
