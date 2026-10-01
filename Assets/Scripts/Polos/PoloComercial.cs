@@ -2,60 +2,33 @@ using UnityEngine;
 
 public class PoloComercial : PoloBase
 {
-    [Header("Comercial Info")] 
-    private int maxHandWorkCapacity;
-    [SerializeField] private int _baseMaxHandWorkCapacity;
-    [SerializeField] private float _handWorkPrice;
+    [Header("Comercial")]
+    [SerializeField] private float baseValue = 2f;              // Vb_c
+    [SerializeField] private float baseClickMoney = 1f;         // o "1" de C_c = 1 + N_c
+    [SerializeField] private int baseHandworkConsumption = 1;   // CbM_c
+ 
+    public float AutoProduction => baseValue * Level;           // P_c = Vb_c * N_c
+    public float MoneyPerClick => baseClickMoney + Level;       // C_c = 1 + N_c
+    public override int HandworkConsumption => baseHandworkConsumption * Level; // CM_c
 
-    public override void Awake() {
-        base.Awake();
-        maxHandWorkCapacity = _baseMaxHandWorkCapacity;
-    }
-
-    void FixedUpdate() {
-        if (_cycletime < cycleMaxTime)
-        {
-            _cycletime += Time.deltaTime;
-            // Debug.Log(_cycletime);
-        }
-        else
-        {
-            ProduceMoneyPerCycle();
-            _cycletime = 0f;
-        }  
-    }
-
-    public override void ProduceMoneyPerCycle()
+    protected override void OnCycleComplete()
     {
-        int handWorkRemain = GameManager.Instance.handwork - maxHandWorkCapacity;
-        float handWorkConsumed = maxHandWorkCapacity;
-        if (handWorkRemain < 0)
+        // Se faltar mão de obra, a produção cai proporcionalmente.
+        float satisfaction = ConsumeHandwork(HandworkConsumption);
+        GameManager.Instance.money += AutoProduction * satisfaction;
+    }
+ 
+    protected override void OnClickEffect()
+    {
+        if (GameManager.Instance.handwork > 1 * Level)
         {
-            /*
-            Codigo para garantir que a quantidade coletada de lixo não vai ser maior que a quantidade atual de mão de obra.
-            */
-            handWorkConsumed = maxHandWorkCapacity - (handWorkRemain * -1f);
+            GameManager.Instance.handwork -= 1 * Level;
+            GameManager.Instance.money += MoneyPerClick;
         }
-        moneyPerTime = handWorkConsumed * _handWorkPrice;
+    }
 
-        base.ProduceMoneyPerCycle();
-        GameManager.Instance.handwork -= (int)handWorkConsumed; 
+    protected override void OnLevelChanged()
+    {
         
-    }
-
-    public override void OnClick()
-    {
-        base.OnClick();
-
-        if (_cycletime < cycleMaxTime)
-        {
-            _cycletime += timeReductionPerClick;
-        }else
-        {
-            ProduceMoneyPerCycle();
-            _cycletime = 0f;
-        } 
-        // ShowPoloInfo();
-        // Debug.Log(gameObject.name + ": apertou");
     }
 }

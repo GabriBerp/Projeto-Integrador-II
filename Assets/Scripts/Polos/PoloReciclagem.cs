@@ -2,62 +2,23 @@ using UnityEngine;
 
 public class PoloReciclagem : PoloBase
 {
-   [Header("Reciclagem Info")] 
-   private int maxTrashCapacity;
-   [SerializeField] private int _baseMaxTrashCapacity;
-   [SerializeField] private float _trashPrice;
-
-    // moneyPerTime = Produção Automática p/ Ciclo
-
-    public override void Awake() {
-        base.Awake();
-        maxTrashCapacity = _baseMaxTrashCapacity;
-    }
-
-    void FixedUpdate() {
-        if (_cycletime < cycleMaxTime)
-        {
-            _cycletime += Time.deltaTime;
-            // Debug.Log(_cycletime);
-        }
-        else
-        {
-            ProduceMoneyPerCycle();
-            _cycletime = 0f;
-        }  
-    }
-
-    public override void ProduceMoneyPerCycle()
+    [Header("Reciclagem")]
+    [SerializeField] private int baseCapacity = 5;     // QbR
+    [SerializeField] private float trashPrice = 1f;    // V_l
+ 
+    public int Capacity => baseCapacity * Level;       // QR = QbR * N
+ 
+    protected override void OnCycleComplete()
     {
-        int trashRemain = GameManager.Instance.trash - maxTrashCapacity;
-        float trashConsumed = maxTrashCapacity;
-        if (trashRemain < 0)
-        {
-            /*
-            Codigo para garantir que a quantidade coletada de lixo não vai ser maior que a quantidade atual de lixo.
-            */
-            trashConsumed = maxTrashCapacity - (trashRemain * -1f);
-        }
-        moneyPerTime = (int)trashConsumed * _trashPrice;
+        int recycled = Mathf.Min(GameManager.Instance.trash, Capacity); // LR = min(L, QR)
+        if (recycled <= 0) return;
+ 
+        GameManager.Instance.trash -= recycled;
+        GameManager.Instance.money += recycled * trashPrice;            // D = LR * V_l
+    }
 
-        base.ProduceMoneyPerCycle();
-        GameManager.Instance.trash -= (int)trashConsumed; 
+    protected override void OnLevelChanged()
+    {
         
-    }
-
-    public override void OnClick()
-    {
-        base.OnClick();
-
-        if (_cycletime < cycleMaxTime)
-        {
-            _cycletime += timeReductionPerClick;
-        }else
-        {
-            ProduceMoneyPerCycle();
-            _cycletime = 0f;
-        } 
-        // ShowPoloInfo();
-        // Debug.Log(gameObject.name + ": apertou");
     }
 }

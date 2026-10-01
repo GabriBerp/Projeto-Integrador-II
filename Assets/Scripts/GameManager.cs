@@ -15,6 +15,15 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI moneyText;
     public TextMeshProUGUI handworkText;
     public TextMeshProUGUI trashText;
+    public TextMeshProUGUI productionText;
+    public TextMeshProUGUI consumeText;
+    public TextMeshProUGUI upgradeCostText;
+
+    [Header ("GameObjects")]
+    public GameObject infoPanel;
+
+    public GameObject upgradeButton;
+    public PoloBase selectedPolo;
 
     void Awake() {
         if (Instance != null && Instance != this)
