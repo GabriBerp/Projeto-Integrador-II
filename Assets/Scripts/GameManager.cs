@@ -23,6 +23,13 @@ public class GameManager : MonoBehaviour
     public GameObject infoPanel;
     public PoloBase selectedPolo;
 
+    [Header("UI - InfoPanel")]
+    public TextMeshProUGUI poloNameText;
+    public TextMeshProUGUI poloLevelText;
+    // productionText, consumeText e upgradeCostText já existem
+
+    private InfoPanelScript infoPanelScript;
+
     void Awake() {
         if (Instance != null && Instance != this)
         {
@@ -33,8 +40,15 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    void Start()
+    {
+        if (infoPanel != null)
+            infoPanelScript = infoPanel.GetComponent<InfoPanelScript>();
+    }
+
     void Update() {
-        UpdateUI();    
+        UpdateUI();  
+        UpdateInfoPanel();  
     }
 
     void UpdateUI()
@@ -44,8 +58,30 @@ public class GameManager : MonoBehaviour
         trashText.text = trash.ToString("0");
     }
 
+    void UpdateInfoPanel()
+    {
+        if (selectedPolo == null) return;
+
+        poloNameText.text      = selectedPolo.poloName;
+        poloLevelText.text     = "Nível " + selectedPolo.Level;
+        productionText.text    = selectedPolo.GetProductionText();
+        consumeText.text       = selectedPolo.GetConsumptionText();
+        upgradeCostText.text   = "$ " + selectedPolo.CurrentUpgradeCost.ToString("0.00");
+    }
+
+    public void SelectPolo(PoloBase polo)
+    {
+        selectedPolo = polo;
+    }
+
+    public void OpenInfoPanel()
+    {
+        if (infoPanelScript != null) infoPanelScript.Show();
+    }
+
     public void UpdateButtonClick()
     {
+        if (selectedPolo == null) return;
         bool updated = selectedPolo.TryUpgrade();
         if (updated)
         {

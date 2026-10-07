@@ -6,6 +6,8 @@ public class PoloResidencial : PoloBase
     [SerializeField] private int baseHandworkProduction = 3; // QbM
  
     public int HandworkProduction => baseHandworkProduction * Level; // QM = QbM * N
+
+    protected override string GetProductionLine() => FormatHandwork(HandworkProduction, cycleMaxTime);
  
     protected override void OnCycleComplete()
     {

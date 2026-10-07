@@ -11,6 +11,8 @@ public class PoloComercial : PoloBase
     public float MoneyPerClick => baseClickMoney + Level;       // C_c = 1 + N_c
     public override int HandworkConsumption => baseHandworkConsumption * Level; // CM_c
 
+    protected override string GetProductionLine() => FormatMoney(AutoProduction, cycleMaxTime);
+    public override string GetConsumptionText()   => FormatHandwork(HandworkConsumption, cycleMaxTime);
     protected override void OnCycleComplete()
     {
         // Se faltar mão de obra, a produção cai proporcionalmente.

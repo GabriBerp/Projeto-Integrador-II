@@ -12,6 +12,11 @@ public class TrashGenerator : MonoBehaviour
     private float timeReductionPerClick;
    [SerializeField] private float _baseTimeReductionPerClick;
 
+    public int ProductionPerCycle => _baseTrashProduction * (polo != null ? polo.Level : 1);
+
+    public string GetProductionLine() => $"🗑️ {ProductionPerCycle} / {cycleMaxTime:0.##} s";
+
+
     void Awake() {
         trashProduction = _baseTrashProduction;
         timeReductionPerClick = _baseTimeReductionPerClick;
@@ -37,7 +42,7 @@ public class TrashGenerator : MonoBehaviour
 
     public void GenerateTrash()
     {
-        GameManager.Instance.trash += trashProduction * poloLevel;
+        GameManager.Instance.trash += ProductionPerCycle;
     }
 
     public void OnClick()

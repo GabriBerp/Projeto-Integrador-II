@@ -6,6 +6,27 @@ public abstract class PoloBase : MonoBehaviour
     [Header("Polo Info")]
     public string poloName;
     public TrashGenerator trashGenerator;
+    public float CycleMaxTime => cycleMaxTime;
+
+    // ---------- Textos para o InfoPanel ----------
+    protected static string FormatMoney(float v, float t)    => $"$ {v:0.00} / {t:0.##} s";
+    protected static string FormatHandwork(float v, float t) => $"🛠️ {v:0.##} / {t:0.##} s";
+    protected static string FormatTrash(float v, float t)    => $"🗑️ {v:0.##} / {t:0.##} s";
+
+    // Cada polo descreve a própria produção
+    protected abstract string GetProductionLine();
+
+    // Por padrão não consome nada
+    public virtual string GetConsumptionText() => "-";
+
+    // Produção do polo + lixo do TrashGenerator (se houver)
+    public string GetProductionText()
+    {
+        string text = GetProductionLine();
+        if (trashGenerator != null)
+            text += "\n" + trashGenerator.GetProductionLine();
+        return text;
+    }
  
     [Header("Ciclo")]
     [SerializeField] protected float cycleMaxTime = 5f;               // TR
@@ -64,13 +85,9 @@ public abstract class PoloBase : MonoBehaviour
     {
         trashGenerator?.OnClick();
         OnClickEffect();
-        AdvanceTime(baseTimeReductionPerClick); // RL * K (um clique)
+        AdvanceTime(baseTimeReductionPerClick);
 
-        if (GameManager.Instance.selectedPolo != this)
-        {
-            GameManager.Instance.selectedPolo = this;
-            Debug.Log("Debug: GameManager selected object = " + this.gameObject.name);
-        }
+        GameManager.Instance.SelectPolo(this);
     }
  
     // Efeito extra do clique (ex.: dinheiro por clique no comercial).

@@ -26,4 +26,16 @@ public class InfoPanelScript : MonoBehaviour
             state = true;
         }
     }
+
+    public void Show()
+    {
+        GetComponent<RectTransform>().anchoredPosition = endPos;
+        state = true;
+    }
+
+    public void Hide()
+    {
+        GetComponent<RectTransform>().anchoredPosition = startPos;
+        state = false;
+    }
 }

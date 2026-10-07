@@ -9,6 +9,9 @@ public class PoloReciclagem : PoloBase
  
     public int Capacity => baseCapacity * Level;       // QR = QbR * N
     public float MoneyPerClick => baseClickMoney + Level;
+
+    protected override string GetProductionLine() => FormatMoney(Capacity * trashPrice, cycleMaxTime);
+    public override string GetConsumptionText()   => FormatTrash(Capacity, cycleMaxTime);
  
     protected override void OnCycleComplete()
     {
