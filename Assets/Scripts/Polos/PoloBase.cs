@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
  
 public abstract class PoloBase : MonoBehaviour
@@ -22,6 +23,8 @@ public abstract class PoloBase : MonoBehaviour
     // Produção do polo + lixo do TrashGenerator (se houver)
     public string GetProductionText()
     {
+        if (isLocked) return "";
+        
         string text = GetProductionLine();
         if (trashGenerator != null)
             text += "\n" + trashGenerator.GetProductionLine();
@@ -49,6 +52,18 @@ public abstract class PoloBase : MonoBehaviour
     // Mão de obra que este polo consome por ciclo (usado p/ CM_total).
     public virtual int HandworkConsumption => 0;
 
+    [Header("Bloqueio")]
+    [SerializeField] protected bool isLocked = false;
+    [SerializeField] protected float unlockCost = 50f;
+    [SerializeField] protected Image lockTarget;                       // Image do botão do polo
+    [SerializeField] protected Color lockedTint = new Color(0.45f, 0.45f, 0.45f, 1f);
+
+    private Color originalColor = Color.white;
+
+    public bool IsLocked => isLocked;
+    public float UnlockCost => unlockCost;
+    public bool CanUnlock() => isLocked && GameManager.Instance.money >= unlockCost;
+
     [Header("Debug Mode")]
     [SerializeField] protected bool showTimer = false;
     [SerializeField] protected TextMeshProUGUI timerText;
@@ -56,12 +71,32 @@ public abstract class PoloBase : MonoBehaviour
     protected virtual void Awake()
     {
         Level = 1;
+
+        if (lockTarget != null) originalColor = lockTarget.color;
+        ApplyLockVisual();
+    }
+
+    public bool TryUnlock()
+    {
+        if (!CanUnlock()) return false;
+
+        GameManager.Instance.money -= unlockCost;
+        isLocked = false;
+        ApplyLockVisual();
+        return true;
+    }
+
+    protected void ApplyLockVisual()
+    {
+        if (lockTarget != null)
+            lockTarget.color = isLocked ? lockedTint : originalColor;
     }
  
     protected virtual void Update()
     {
-        AdvanceTime(Time.deltaTime);
+        if (isLocked) return; 
 
+        AdvanceTime(Time.deltaTime);
         DebugMode();
     }
  
@@ -83,17 +118,23 @@ public abstract class PoloBase : MonoBehaviour
  
     public virtual void OnClick()
     {
+        GameManager.Instance.SelectPolo(this);
+        if (isLocked)
+        {
+            // Só abre o painel; o overlay e os textos vazios são tratados pelo GameManager
+            GameManager.Instance.OpenInfoPanel();
+            return;
+        }
+
         trashGenerator?.OnClick();
         OnClickEffect();
         AdvanceTime(baseTimeReductionPerClick);
-
-        GameManager.Instance.SelectPolo(this);
     }
  
     // Efeito extra do clique (ex.: dinheiro por clique no comercial).
     protected virtual void OnClickEffect() { }
  
-    public bool CanUpgrade() => GameManager.Instance.money >= CurrentUpgradeCost;
+    public bool CanUpgrade() => !isLocked && GameManager.Instance.money >= CurrentUpgradeCost;
  
     public virtual bool TryUpgrade()
     {

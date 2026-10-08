@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -10,23 +11,26 @@ public class GameManager : MonoBehaviour
     public float handwork = 0;
     public float trash = 0;
     public float lifeQuality = 0;
+    public float maxLifeQuality = 100f;
 
-    [Header("UI")]
-    public TextMeshProUGUI moneyText;
-    public TextMeshProUGUI handworkText;
-    public TextMeshProUGUI trashText;
-    public TextMeshProUGUI productionText;
-    public TextMeshProUGUI consumeText;
-    public TextMeshProUGUI upgradeCostText;
+    [Header("UI - ResourcePanel")]
+    [SerializeField] private TextMeshProUGUI moneyText;
+    [SerializeField] private TextMeshProUGUI handworkText;
+    [SerializeField] private TextMeshProUGUI trashText;
+    [SerializeField] private Slider lifeQualitySlider;
 
     [Header ("GameObjects")]
-    public GameObject infoPanel;
+    [SerializeField] private GameObject infoPanel;
     public PoloBase selectedPolo;
+    [SerializeField] private GameObject blockedOverlay;
 
     [Header("UI - InfoPanel")]
-    public TextMeshProUGUI poloNameText;
-    public TextMeshProUGUI poloLevelText;
-    // productionText, consumeText e upgradeCostText já existem
+    [SerializeField] private TextMeshProUGUI poloNameText;
+    [SerializeField] private TextMeshProUGUI poloLevelText;
+    [SerializeField] private TextMeshProUGUI productionText;
+    [SerializeField] private TextMeshProUGUI consumeText;
+    [SerializeField] private TextMeshProUGUI upgradeCostText;
+    [SerializeField] private TextMeshProUGUI unlockCostText;
 
     private InfoPanelScript infoPanelScript;
 
@@ -44,11 +48,17 @@ public class GameManager : MonoBehaviour
     {
         if (infoPanel != null)
             infoPanelScript = infoPanel.GetComponent<InfoPanelScript>();
+
+        if (lifeQualitySlider != null)
+        {
+            lifeQualitySlider.minValue = 0f;
+            lifeQualitySlider.maxValue = maxLifeQuality;
+            lifeQualitySlider.interactable = false;   // jogador não mexe no slider
+        }
     }
 
     void Update() {
-        UpdateUI();  
-        UpdateInfoPanel();  
+        UpdateUI(); 
     }
 
     void UpdateUI()
@@ -56,11 +66,16 @@ public class GameManager : MonoBehaviour
         moneyText.text = money.ToString("0.00");
         handworkText.text = handwork.ToString("0");
         trashText.text = trash.ToString("0");
+
+        lifeQuality = Mathf.Clamp(lifeQuality, 0f, maxLifeQuality);
+
+        if (lifeQualitySlider != null)
+            lifeQualitySlider.value = lifeQuality;
     }
 
     void UpdateInfoPanel()
     {
-        if (selectedPolo == null) return;
+        if (selectedPolo == null || selectedPolo.IsLocked) return;
 
         poloNameText.text      = selectedPolo.poloName;
         poloLevelText.text     = "Nível " + selectedPolo.Level;
@@ -72,6 +87,7 @@ public class GameManager : MonoBehaviour
     public void SelectPolo(PoloBase polo)
     {
         selectedPolo = polo;
+        RefreshInfoPanel();
     }
 
     public void OpenInfoPanel()
@@ -79,18 +95,42 @@ public class GameManager : MonoBehaviour
         if (infoPanelScript != null) infoPanelScript.Show();
     }
 
-    public void UpdateButtonClick()
+    void RefreshInfoPanel()
     {
-        if (selectedPolo == null) return;
-        bool updated = selectedPolo.TryUpgrade();
-        if (updated)
+        var polo = selectedPolo;   // o nome do seu campo pode ser outro
+        if (polo == null) return;
+
+        bool locked = polo.IsLocked;
+        blockedOverlay.SetActive(locked);
+
+        if (locked)
         {
-            Debug.Log("Debug: " + selectedPolo.gameObject.name + " updated");
+            poloNameText.text = "";
+            poloLevelText.text = "";
+            productionText.text = "";
+            consumeText.text = "";
+            upgradeCostText.text = "";
+            unlockCostText.text = "$ " + polo.UnlockCost.ToString("0.00");
+            return;
         }
-        else
-        {
-            Debug.Log("Debug: " + selectedPolo.gameObject.name + " cannot be updated");
-        }
+
+        poloNameText.text      = polo.poloName;
+        poloLevelText.text     = "Nível " + polo.Level;
+        productionText.text    = polo.GetProductionText();
+        consumeText.text       = polo.GetConsumptionText();
+        upgradeCostText.text   = "$ " + polo.CurrentUpgradeCost.ToString("0.00");
     }
 
+    public void UnlockSelectedPolo()
+    {
+        if (selectedPolo != null && selectedPolo.TryUnlock())
+            RefreshInfoPanel();
+    }
+    public void UpdateButtonClick()
+    {
+        if (selectedPolo != null && selectedPolo.TryUpgrade())
+        {
+            RefreshInfoPanel();
+        }
+    }
 }
