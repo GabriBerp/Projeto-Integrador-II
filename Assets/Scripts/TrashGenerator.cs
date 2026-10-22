@@ -42,7 +42,10 @@ public class TrashGenerator : MonoBehaviour
 
     public void GenerateTrash()
     {
+        Debug.Log("GereiLixo");
         GameManager.Instance.trash += ProductionPerCycle;
+        
+        FloatingTextSpawner.Instance.SpawnAtWorld(ProductionPerCycle, transform.position);
     }
 
     public void OnClick()

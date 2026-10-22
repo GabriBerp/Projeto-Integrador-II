@@ -12,6 +12,8 @@ public class PoloResidencial : PoloBase
     protected override void OnCycleComplete()
     {
         GameManager.Instance.handwork += HandworkProduction;
+        
+        FloatingTextSpawner.Instance.SpawnAtUI(HandworkProduction, (RectTransform)transform);
     }
 
     protected override void OnLevelChanged()
@@ -23,5 +25,7 @@ public class PoloResidencial : PoloBase
     {
         float val = 0.5f * Level;
         GameManager.Instance.handwork += val;
+
+        FloatingTextSpawner.Instance.SpawnAtScreenPoint(val, Input.mousePosition);
     }
 }

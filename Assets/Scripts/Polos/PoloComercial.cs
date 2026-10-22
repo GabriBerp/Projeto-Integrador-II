@@ -18,6 +18,8 @@ public class PoloComercial : PoloBase
         // Se faltar mão de obra, a produção cai proporcionalmente.
         float satisfaction = ConsumeHandwork(HandworkConsumption);
         GameManager.Instance.money += AutoProduction * satisfaction;
+
+        FloatingTextSpawner.Instance.SpawnAtUI(AutoProduction * satisfaction, (RectTransform)transform);
     }
  
     protected override void OnClickEffect()
@@ -27,6 +29,8 @@ public class PoloComercial : PoloBase
         {
             GameManager.Instance.handwork -= val;
             GameManager.Instance.money += MoneyPerClick;
+
+            FloatingTextSpawner.Instance.SpawnAtScreenPoint(MoneyPerClick, Input.mousePosition);
         }
     }
 
