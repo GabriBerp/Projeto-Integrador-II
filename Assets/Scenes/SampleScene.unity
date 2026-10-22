@@ -2579,7 +2579,7 @@ MonoBehaviour:
   cycleMaxTime: 15
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
-  upgradeCostGrowth: 1.15
+  upgradeCostGrowth: 1.125
   baseQualityOfLifePerUpgrade: 0.01
   isLocked: 1
   unlockCost: 50
@@ -2936,7 +2936,7 @@ MonoBehaviour:
   cycleMaxTime: 20
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
-  upgradeCostGrowth: 1.15
+  upgradeCostGrowth: 1.125
   baseQualityOfLifePerUpgrade: 0.01
   isLocked: 1
   unlockCost: 50
@@ -4237,7 +4237,7 @@ MonoBehaviour:
   cycleMaxTime: 10
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
-  upgradeCostGrowth: 1.15
+  upgradeCostGrowth: 1.125
   baseQualityOfLifePerUpgrade: 0.01
   isLocked: 0
   unlockCost: 50
@@ -5242,7 +5242,7 @@ MonoBehaviour:
   cycleMaxTime: 15
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
-  upgradeCostGrowth: 1.15
+  upgradeCostGrowth: 1.125
   baseQualityOfLifePerUpgrade: 0.01
   isLocked: 0
   unlockCost: 50
@@ -6620,7 +6620,7 @@ MonoBehaviour:
   cycleMaxTime: 20
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
-  upgradeCostGrowth: 1.15
+  upgradeCostGrowth: 1.125
   baseQualityOfLifePerUpgrade: 0.01
   isLocked: 1
   unlockCost: 50
@@ -7374,7 +7374,7 @@ MonoBehaviour:
   cycleMaxTime: 20
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
-  upgradeCostGrowth: 1.15
+  upgradeCostGrowth: 1.125
   baseQualityOfLifePerUpgrade: 0.01
   isLocked: 1
   unlockCost: 50
@@ -7693,7 +7693,7 @@ MonoBehaviour:
   cycleMaxTime: 15
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
-  upgradeCostGrowth: 1.15
+  upgradeCostGrowth: 1.125
   baseQualityOfLifePerUpgrade: 0.01
   isLocked: 1
   unlockCost: 50
@@ -7857,7 +7857,7 @@ MonoBehaviour:
   cycleMaxTime: 15
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
-  upgradeCostGrowth: 1.15
+  upgradeCostGrowth: 1.125
   baseQualityOfLifePerUpgrade: 0.01
   isLocked: 1
   unlockCost: 50
