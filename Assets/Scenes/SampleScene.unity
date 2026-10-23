@@ -5239,7 +5239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PoloResidencial
   poloName: Predio
   trashGenerator: {fileID: 979033895}
-  cycleMaxTime: 1
+  cycleMaxTime: 15
   baseTimeReductionPerClick: 1
   baseUpgradeCost: 10
   upgradeCostGrowth: 1.125

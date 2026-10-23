@@ -21,7 +21,7 @@ public class PoloReciclagem : PoloBase
         GameManager.Instance.trash -= recycled;
         GameManager.Instance.money += recycled * trashPrice;            // D = LR * V_l
 
-        FloatingTextSpawner.Instance.SpawnAtUI(recycled * trashPrice, (RectTransform)transform);
+        FloatingTextSpawner.Instance.SpawnAtUI(recycled * trashPrice, (RectTransform)transform, "money");
     }
 
     protected override void OnLevelChanged()
@@ -37,7 +37,7 @@ public class PoloReciclagem : PoloBase
             GameManager.Instance.trash -= val;
             GameManager.Instance.money += MoneyPerClick;
 
-            FloatingTextSpawner.Instance.SpawnAtScreenPoint(MoneyPerClick, Input.mousePosition);
+            FloatingTextSpawner.Instance.SpawnAtUI(MoneyPerClick, (RectTransform)transform, "money");
         }
     }
 }

@@ -19,7 +19,7 @@ public class PoloComercial : PoloBase
         float satisfaction = ConsumeHandwork(HandworkConsumption);
         GameManager.Instance.money += AutoProduction * satisfaction;
 
-        FloatingTextSpawner.Instance.SpawnAtUI(AutoProduction * satisfaction, (RectTransform)transform);
+        FloatingTextSpawner.Instance.SpawnAtUI(AutoProduction * satisfaction, (RectTransform)transform, "money");
     }
  
     protected override void OnClickEffect()
@@ -30,7 +30,7 @@ public class PoloComercial : PoloBase
             GameManager.Instance.handwork -= val;
             GameManager.Instance.money += MoneyPerClick;
 
-            FloatingTextSpawner.Instance.SpawnAtScreenPoint(MoneyPerClick, Input.mousePosition);
+            FloatingTextSpawner.Instance.SpawnAtUI(MoneyPerClick, (RectTransform)transform, "money");
         }
     }
 

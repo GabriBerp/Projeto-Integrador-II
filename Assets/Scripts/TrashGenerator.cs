@@ -42,10 +42,9 @@ public class TrashGenerator : MonoBehaviour
 
     public void GenerateTrash()
     {
-        Debug.Log("GereiLixo");
         GameManager.Instance.trash += ProductionPerCycle;
         
-        FloatingTextSpawner.Instance.SpawnAtWorld(ProductionPerCycle, transform.position);
+        FloatingTextSpawner.Instance.SpawnAtWorld(ProductionPerCycle, transform.position, "trash");
     }
 
     public void OnClick()
@@ -57,7 +56,6 @@ public class TrashGenerator : MonoBehaviour
         {
             GenerateTrash();
             _cycletime = 0f;
-        } 
-        // Debug.Log(gameObject.name + ": apertou");
+        }
     }
 }
