@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public float trash = 0;
     public float lifeQuality = 0;
     public float maxLifeQuality = 100f;
+    public float baseMoneyCap = 500f;
 
     [Header("UI - ResourcePanel")]
     [SerializeField] private TextMeshProUGUI moneyText;
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour
 
     void Update() {
         UpdateUI(); 
+        money = Mathf.Clamp(money, 0, baseMoneyCap);
     }
 
     void UpdateUI()
