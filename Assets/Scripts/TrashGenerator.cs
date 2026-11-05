@@ -14,7 +14,7 @@ public class TrashGenerator : MonoBehaviour
 
     public int ProductionPerCycle => _baseTrashProduction * (polo != null ? polo.Level : 1);
 
-    public string GetProductionLine() => $"🗑️ {ProductionPerCycle} / {cycleMaxTime:0.##} s";
+    public string GetProductionLine() => $"     {ProductionPerCycle} / {cycleMaxTime:0.##} s";
 
 
     void Awake() {
@@ -30,13 +30,15 @@ public class TrashGenerator : MonoBehaviour
     }
 
     void FixedUpdate() {
+        if (polo != null && polo.IsLocked) return;
+
         if (_cycletime < cycleMaxTime)
         {
             _cycletime += Time.deltaTime;
         }else
         {
             GenerateTrash();
-            _cycletime = 0f;
+            _cycletime -= cycleMaxTime;
         } 
     }
 
@@ -44,18 +46,20 @@ public class TrashGenerator : MonoBehaviour
     {
         GameManager.Instance.trash += ProductionPerCycle;
         
-        FloatingTextSpawner.Instance.SpawnAtWorld(ProductionPerCycle, transform.position, "trash");
+        FloatingTextSpawner.Instance.SpawnAtUI(ProductionPerCycle, (RectTransform)polo.transform, "trash");
     }
 
     public void OnClick()
     {
+        if (polo != null && polo.IsLocked) return;
+
         if (_cycletime < cycleMaxTime)
         {
             _cycletime += timeReductionPerClick;
         }else
         {
             GenerateTrash();
-            _cycletime = 0f;
+            _cycletime -= cycleMaxTime;
         }
     }
 }

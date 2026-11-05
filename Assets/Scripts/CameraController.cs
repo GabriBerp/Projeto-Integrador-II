@@ -3,19 +3,21 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [Header("Configurações de Movimento")]
-    [SerializeField] private float dragSpeed = 0.5f;
     [SerializeField] private string boundaryTag = "Boundary";
+    [SerializeField] private float groundHeight = 0f; // altura (Y) do chão
 
     private Camera cam;
+    private Plane groundPlane;
     private Vector3 dragOrigin;
     private bool isDragging = false;
 
-    // Valores calculados dinamicamente com base nas tags
-    private float minX, maxX, minY, maxY;
+    // Agora os limites são em X e Z (o chão)
+    private float minX, maxX, minZ, maxZ;
 
     void Start()
     {
         cam = Camera.main;
+        groundPlane = new Plane(Vector3.up, new Vector3(0f, groundHeight, 0f));
         CalculateBoundaries();
     }
 
@@ -24,7 +26,6 @@ public class CameraController : MonoBehaviour
         HandleInput();
     }
 
-    // Busca os objetos na cena com a Tag e define os limites de movimento da câmera
     private void CalculateBoundaries()
     {
         GameObject[] boundaries = GameObject.FindGameObjectsWithTag(boundaryTag);
@@ -32,71 +33,68 @@ public class CameraController : MonoBehaviour
         if (boundaries.Length == 0)
         {
             Debug.LogWarning($"Nenhum objeto com a tag '{boundaryTag}' foi encontrado. A câmera está sem limites!");
-            minX = minY = float.MinValue;
-            maxX = maxY = float.MaxValue;
+            minX = minZ = float.MinValue;
+            maxX = maxZ = float.MaxValue;
             return;
         }
 
-        // Inicializa com os valores extremos
-        minX = minY = float.MaxValue;
-        maxX = maxY = float.MinValue;
+        minX = minZ = float.MaxValue;
+        maxX = maxZ = float.MinValue;
 
         foreach (var boundary in boundaries)
         {
             Vector3 pos = boundary.transform.position;
             if (pos.x < minX) minX = pos.x;
             if (pos.x > maxX) maxX = pos.x;
-            if (pos.y < minY) minY = pos.y;
-            if (pos.y > maxY) maxY = pos.y;
+            if (pos.z < minZ) minZ = pos.z;
+            if (pos.z > maxZ) maxZ = pos.z;
         }
+    }
+
+    // Ponto do chão que está sob o dedo/mouse
+    private bool TryGetGroundPoint(Vector2 screenPos, out Vector3 point)
+    {
+        Ray ray = cam.ScreenPointToRay(screenPos);
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            point = ray.GetPoint(distance);
+            return true;
+        }
+        point = Vector3.zero;
+        return false;
     }
 
     private void HandleInput()
     {
-        // Detecção Unificada: Funciona para Toque (Celular) e Clique (Mouse/Editor)
         bool inputDown = Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
         bool inputHeld = Input.GetMouseButton(0) || (Input.touchCount > 0 && (Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(0).phase == TouchPhase.Stationary));
         bool inputUp = Input.GetMouseButtonUp(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended);
 
-        Vector3 currentScreenPos = Vector3.zero;
+        Vector2 currentScreenPos = Input.touchCount > 0
+            ? Input.GetTouch(0).position
+            : (Vector2)Input.mousePosition;
 
-        // Captura a posição atual do ponteiro
-        if (Input.touchCount > 0)
-        {
-            currentScreenPos = Input.GetTouch(0).position;
-        }
-        else
-        {
-            currentScreenPos = Input.mousePosition;
-        }
-
-        // Início do Arraste
         if (inputDown)
         {
-            dragOrigin = cam.ScreenToWorldPoint(currentScreenPos);
-            isDragging = true;
+            if (TryGetGroundPoint(currentScreenPos, out dragOrigin))
+                isDragging = true;
         }
 
-        // Movimento durante o Arraste
         if (inputHeld && isDragging)
         {
-            Vector3 currentWorldPos = cam.ScreenToWorldPoint(currentScreenPos);
-            Vector3 difference = dragOrigin - currentWorldPos;
+            if (TryGetGroundPoint(currentScreenPos, out Vector3 currentWorldPos))
+            {
+                Vector3 difference = dragOrigin - currentWorldPos;
+                difference.y = 0f; // nunca muda a altura da câmera
 
-            // Calcula a nova posição desejada da câmera
-            Vector3 targetPosition = transform.position + difference;
+                Vector3 targetPosition = transform.position + difference;
+                targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
+                targetPosition.z = Mathf.Clamp(targetPosition.z, minZ, maxZ);
 
-            // Aplica os limites físicos (Clamp) baseados nas posições dos objetos Boundary
-            targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
-            targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
-
-            // Mantém a posição Z original da câmera intacta
-            targetPosition.z = transform.position.z;
-
-            transform.position = targetPosition;
+                transform.position = targetPosition;
+            }
         }
 
-        // Fim do Arraste
         if (inputUp)
         {
             isDragging = false;

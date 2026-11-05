@@ -8,7 +8,7 @@ public class PoloReciclagem : PoloBase
     [SerializeField] private float baseClickMoney = 1f; 
  
     public int Capacity => baseCapacity * Level;       // QR = QbR * N
-    public float MoneyPerClick => baseClickMoney + Level;
+    public float MoneyPerClick => baseClickMoney + (Level % 5);
 
     protected override string GetProductionLine() => FormatMoney(Capacity * trashPrice, cycleMaxTime);
     public override string GetConsumptionText()   => FormatTrash(Capacity, cycleMaxTime);
@@ -29,9 +29,10 @@ public class PoloReciclagem : PoloBase
         
     }
 
+    /*
     protected override void OnClickEffect()
     {
-        float val = 0.5f * Level;
+        float val = 0.5f * (1 + (Level % 5));
         if (GameManager.Instance.trash > val)
         {
             GameManager.Instance.trash -= val;
@@ -40,4 +41,5 @@ public class PoloReciclagem : PoloBase
             FloatingTextSpawner.Instance.SpawnAtUI(MoneyPerClick, (RectTransform)transform, "money");
         }
     }
+    */
 }

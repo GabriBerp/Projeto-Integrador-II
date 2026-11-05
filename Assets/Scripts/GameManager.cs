@@ -34,6 +34,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI consumeText;
     [SerializeField] private TextMeshProUGUI upgradeCostText;
     [SerializeField] private TextMeshProUGUI unlockCostText;
+    [SerializeField] private Image productionImage1;
+    [SerializeField] private Image productionImage2;
+    [SerializeField] private Image consumeImage;
+
+    public Sprite moneyIcon;
+    public Sprite handWorkIcon;
+    public Sprite trashIcon;
 
     private InfoPanelScript infoPanelScript;
 
@@ -58,6 +65,8 @@ public class GameManager : MonoBehaviour
             lifeQualitySlider.maxValue = maxLifeQuality;
             lifeQualitySlider.interactable = false;   // jogador não mexe no slider
         }
+
+        UpdateInfoPanel();
     }
 
     void Update() {
@@ -88,6 +97,44 @@ public class GameManager : MonoBehaviour
         productionText.text    = selectedPolo.GetProductionText();
         consumeText.text       = selectedPolo.GetConsumptionText();
         upgradeCostText.text   = "$ " + selectedPolo.CurrentUpgradeCost.ToString("0.00");
+
+        // productionImage1 = moneyIcon; => se for PoloComercial ou PoloReciclagem
+        if (selectedPolo as PoloReciclagem != null || selectedPolo as PoloComercial != null)
+        {
+            productionImage1.sprite = moneyIcon;
+        }
+        // productionImagem1 = handWorkIcon => se for PoloResidencial
+        if (selectedPolo as PoloResidencial != null)
+        {
+            productionImage1.sprite = moneyIcon;
+        }
+
+        if (selectedPolo.trashGenerator != null)
+        {
+            productionImage2.sprite = trashIcon;
+        }
+        else
+        {
+           productionImage2.sprite = null; 
+        }
+
+        if (consumeText.text != "   .")
+        {
+            // consumeImage.sprite = trashIcon; => se for PoloReciclagem
+            if (selectedPolo as PoloReciclagem != null)
+            {
+                consumeImage.sprite = trashIcon;
+            }
+            // consumeImage.sprite = handWorkIcon; => se for PoloComercial
+            if (selectedPolo as PoloComercial != null)
+            {
+                consumeImage.sprite = handWorkIcon;
+            }
+        }
+        else
+        {
+            consumeImage.sprite = null;
+        }
     }
 
     public void SelectPolo(PoloBase polo)
@@ -117,6 +164,10 @@ public class GameManager : MonoBehaviour
             consumeText.text = "";
             upgradeCostText.text = "";
             unlockCostText.text = "$ " + polo.UnlockCost.ToString("0.00");
+
+            productionImage1.sprite = null;
+            productionImage2.sprite = null;
+            consumeImage.sprite = null;
             return;
         }
 
@@ -125,6 +176,44 @@ public class GameManager : MonoBehaviour
         productionText.text    = polo.GetProductionText();
         consumeText.text       = polo.GetConsumptionText();
         upgradeCostText.text   = "$ " + polo.CurrentUpgradeCost.ToString("0.00");
+
+        // productionImage1 = moneyIcon; => se for PoloComercial ou PoloReciclagem
+        if (selectedPolo as PoloReciclagem != null || selectedPolo as PoloComercial != null)
+        {
+            productionImage1.sprite = moneyIcon;
+        }
+        // productionImagem1 = handWorkIcon => se for PoloResidencial
+        if (selectedPolo as PoloResidencial != null)
+        {
+            productionImage1.sprite = moneyIcon;
+        }
+
+        if (selectedPolo.trashGenerator != null)
+        {
+            productionImage2.sprite = trashIcon;
+        }
+        else
+        {
+           productionImage2.sprite = null; 
+        }
+
+        if (consumeText.text != "   .")
+        {
+            // consumeImage.sprite = trashIcon; => se for PoloReciclagem
+            if (selectedPolo as PoloReciclagem != null)
+            {
+                consumeImage.sprite = trashIcon;
+            }
+            // consumeImage.sprite = handWorkIcon; => se for PoloComercial
+            if (selectedPolo as PoloComercial != null)
+            {
+                consumeImage.sprite = handWorkIcon;
+            }
+        }
+        else
+        {
+            consumeImage.sprite = null;
+        }
     }
 
     public void UnlockSelectedPolo()

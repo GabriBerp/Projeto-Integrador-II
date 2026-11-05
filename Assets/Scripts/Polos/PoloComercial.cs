@@ -8,7 +8,7 @@ public class PoloComercial : PoloBase
     [SerializeField] private int baseHandworkConsumption = 1;   // CbM_c
  
     public float AutoProduction => baseValue * Level;           // P_c = Vb_c * N_c
-    public float MoneyPerClick => baseClickMoney + Level;       // C_c = 1 + N_c
+    public float MoneyPerClick => baseClickMoney + (Level % 5);       // C_c = 1 + N_c
     public override int HandworkConsumption => baseHandworkConsumption * Level; // CM_c
 
     protected override string GetProductionLine() => FormatMoney(AutoProduction, cycleMaxTime);
@@ -22,9 +22,10 @@ public class PoloComercial : PoloBase
         FloatingTextSpawner.Instance.SpawnAtUI(AutoProduction * satisfaction, (RectTransform)transform, "money");
     }
  
+    /*
     protected override void OnClickEffect()
     {
-        float val = 0.5f * Level;
+        float val = 0.5f * (1 + (Level % 5));
         if (GameManager.Instance.handwork > val)
         {
             GameManager.Instance.handwork -= val;
@@ -33,6 +34,7 @@ public class PoloComercial : PoloBase
             FloatingTextSpawner.Instance.SpawnAtUI(MoneyPerClick, (RectTransform)transform, "money");
         }
     }
+    */
 
     protected override void OnLevelChanged()
     {

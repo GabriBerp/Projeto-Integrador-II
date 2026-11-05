@@ -10,15 +10,15 @@ public abstract class PoloBase : MonoBehaviour
     public float CycleMaxTime => cycleMaxTime;
 
     // ---------- Textos para o InfoPanel ----------
-    protected static string FormatMoney(float v, float t)    => $"$ {v:0.00} / {t:0.##} s";
-    protected static string FormatHandwork(float v, float t) => $"🛠️ {v:0.##} / {t:0.##} s";
-    protected static string FormatTrash(float v, float t)    => $"🗑️ {v:0.##} / {t:0.##} s";
+    protected static string FormatMoney(float v, float t)    => $"     {v:0.00} / {t:0.##} s";
+    protected static string FormatHandwork(float v, float t) => $"     {v:0.##} / {t:0.##} s";
+    protected static string FormatTrash(float v, float t)    => $"     {v:0.##} / {t:0.##} s";
 
     // Cada polo descreve a própria produção
     protected abstract string GetProductionLine();
 
     // Por padrão não consome nada
-    public virtual string GetConsumptionText() => "-";
+    public virtual string GetConsumptionText() => "   .";
 
     // Produção do polo + lixo do TrashGenerator (se houver)
     public string GetProductionText()
@@ -33,7 +33,6 @@ public abstract class PoloBase : MonoBehaviour
  
     [Header("Ciclo")]
     [SerializeField] protected float cycleMaxTime = 5f;               // TR
-    [SerializeField] protected float baseTimeReductionPerClick = 0.5f; // RL
     public float CycleTime { get; protected set; }                    // tempo decorrido no ciclo
  
     [Header("Upgrade")]
@@ -55,14 +54,12 @@ public abstract class PoloBase : MonoBehaviour
     [Header("Bloqueio")]
     [SerializeField] protected bool isLocked = false;
     [SerializeField] protected float unlockCost = 50f;
-    [SerializeField] protected Image lockTarget;                       // Image do botão do polo
-    [SerializeField] protected Color lockedTint = new Color(0.45f, 0.45f, 0.45f, 1f);
-
-    private Color originalColor = Color.white;
 
     public bool IsLocked => isLocked;
     public float UnlockCost => unlockCost;
     public bool CanUnlock() => isLocked && GameManager.Instance.money >= unlockCost;
+
+    public double ReductionPerClick => cycleMaxTime * 0.06f;
 
     [Header("Debug Mode")]
     [SerializeField] protected bool showTimer = false;
@@ -71,9 +68,6 @@ public abstract class PoloBase : MonoBehaviour
     protected virtual void Awake()
     {
         Level = 1;
-
-        if (lockTarget != null) originalColor = lockTarget.color;
-        ApplyLockVisual();
     }
 
     public bool TryUnlock()
@@ -82,14 +76,7 @@ public abstract class PoloBase : MonoBehaviour
 
         GameManager.Instance.money -= unlockCost;
         isLocked = false;
-        ApplyLockVisual();
         return true;
-    }
-
-    protected void ApplyLockVisual()
-    {
-        if (lockTarget != null)
-            lockTarget.color = isLocked ? lockedTint : originalColor;
     }
  
     protected virtual void Update()
@@ -128,7 +115,8 @@ public abstract class PoloBase : MonoBehaviour
 
         trashGenerator?.OnClick();
         OnClickEffect();
-        AdvanceTime(baseTimeReductionPerClick);
+        AdvanceTime((float)ReductionPerClick);
+        FloatingTextSpawner.Instance.SpawnAtUI(ReductionPerClick, (RectTransform)transform, "second");
     }
  
     // Efeito extra do clique (ex.: dinheiro por clique no comercial).

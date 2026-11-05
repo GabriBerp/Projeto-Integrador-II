@@ -23,9 +23,10 @@ public class FloatingTextSpawner : MonoBehaviour
         ((RectTransform)ft.transform).anchoredPosition = localPos;
         switch (type)
         {
-            case "money": ft.Show("+$" + NumberFormatter.Format(amount), Color.yellow);break;
+            case "money": ft.Show("+$" + NumberFormatter.Format(amount), Color.green);break;
             case "handwork": ft.Show("+" + NumberFormatter.Format(amount), Color.red);break;
             case "trash": ft.Show("+" + NumberFormatter.Format(amount), Color.gray);break;
+            case "second": ft.Show("-" + NumberFormatter.Format(amount) + "s", Color.white);break;
         }
     }
 
