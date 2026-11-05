@@ -909,6 +909,7 @@ RectTransform:
   - {fileID: 1788119025}
   - {fileID: 597455819}
   - {fileID: 988117363}
+  - {fileID: 1299988585}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3053,6 +3054,7 @@ GameObject:
   m_Component:
   - component: {fileID: 776853513}
   - component: {fileID: 776853514}
+  - component: {fileID: 776853515}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3092,6 +3094,9 @@ MonoBehaviour:
   trash: 0
   lifeQuality: 0
   maxLifeQuality: 100
+  baseMoneyCap: 500
+  baseHandWorkCap: 500
+  baseTrashCap: 500
   moneyText: {fileID: 273078559}
   handworkText: {fileID: 1741247404}
   trashText: {fileID: 1936297564}
@@ -3105,6 +3110,23 @@ MonoBehaviour:
   consumeText: {fileID: 889056980}
   upgradeCostText: {fileID: 1238839280}
   unlockCostText: {fileID: 1564752008}
+--- !u!114 &776853515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 776853512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e532bb2c0b137b440807f4bda959980f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourcePopupManager
+  popupPrefab: {fileID: 7608357453166330203, guid: dadd8a4972876d84fbc2b1b9272a78ce, type: 3}
+  container: {fileID: 1299988585}
+  margin: 20
+  spacing: 10
+  hideBelow: 0.9
 --- !u!1 &781712460
 GameObject:
   m_ObjectHideFlags: 0
@@ -5087,6 +5109,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1261496448}
   m_CullTransparentMesh: 1
+--- !u!1 &1299988584
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1299988585}
+  m_Layer: 5
+  m_Name: ResourcePopupContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1299988585
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299988584}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 130396476}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -275}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 1, y: 1}
 --- !u!1 &1313052694
 GameObject:
   m_ObjectHideFlags: 0
@@ -6572,7 +6629,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -312, y: 338.5152}
+  m_AnchoredPosition: {x: -311.99997, y: 338.5152}
   m_SizeDelta: {x: -680, y: -1258.37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1788119026

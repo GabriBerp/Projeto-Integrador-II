@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public float lifeQuality = 0;
     public float maxLifeQuality = 100f;
     public float baseMoneyCap = 500f;
+    public float baseHandWorkCap = 500f;
+    public float baseTrashCap = 500f;
 
     [Header("UI - ResourcePanel")]
     [SerializeField] private TextMeshProUGUI moneyText;
@@ -61,6 +63,8 @@ public class GameManager : MonoBehaviour
     void Update() {
         UpdateUI(); 
         money = Mathf.Clamp(money, 0, baseMoneyCap);
+        handwork = Mathf.Clamp(handwork, 0, baseHandWorkCap);
+        trash = Mathf.Clamp(trash, 0, baseTrashCap);
     }
 
     void UpdateUI()
