@@ -13,7 +13,7 @@ public class PoloResidencial : PoloBase
     {
         GameManager.Instance.handwork += HandworkProduction;
         
-        FloatingTextSpawner.Instance.SpawnAtUI(HandworkProduction, (RectTransform)transform, "handwork");
+        FloatingTextSpawner.Instance.SpawnAtWorld(HandworkProduction, transform.position, "handwork");
     }
 
     protected override void OnLevelChanged()

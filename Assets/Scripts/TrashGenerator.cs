@@ -46,7 +46,7 @@ public class TrashGenerator : MonoBehaviour
     {
         GameManager.Instance.trash += ProductionPerCycle;
         
-        FloatingTextSpawner.Instance.SpawnAtUI(ProductionPerCycle, (RectTransform)polo.transform, "trash");
+        FloatingTextSpawner.Instance.SpawnAtWorld(ProductionPerCycle, polo.transform.position, "trash");
     }
 
     public void OnClick()

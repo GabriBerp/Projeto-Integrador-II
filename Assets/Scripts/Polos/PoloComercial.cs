@@ -19,7 +19,7 @@ public class PoloComercial : PoloBase
         float satisfaction = ConsumeHandwork(HandworkConsumption);
         GameManager.Instance.money += AutoProduction * satisfaction;
 
-        FloatingTextSpawner.Instance.SpawnAtUI(AutoProduction * satisfaction, (RectTransform)transform, "money");
+        FloatingTextSpawner.Instance.SpawnAtWorld(AutoProduction * satisfaction, transform.position, "money");
     }
  
     /*

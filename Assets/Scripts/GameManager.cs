@@ -143,6 +143,13 @@ public class GameManager : MonoBehaviour
         RefreshInfoPanel();
     }
 
+    public bool IsInfoPanelOpen => infoPanelScript != null && infoPanelScript.state;
+
+    public void CloseInfoPanel()
+    {
+        if (infoPanelScript != null) infoPanelScript.Hide();
+    }
+
     public void OpenInfoPanel()
     {
         if (infoPanelScript != null) infoPanelScript.Show();

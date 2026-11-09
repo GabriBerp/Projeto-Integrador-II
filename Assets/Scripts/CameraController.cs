@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -11,7 +13,6 @@ public class CameraController : MonoBehaviour
     private Vector3 dragOrigin;
     private bool isDragging = false;
 
-    // Agora os limites são em X e Z (o chão)
     private float minX, maxX, minZ, maxZ;
 
     void Start()
@@ -66,38 +67,44 @@ public class CameraController : MonoBehaviour
 
     private void HandleInput()
     {
-        bool inputDown = Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
-        bool inputHeld = Input.GetMouseButton(0) || (Input.touchCount > 0 && (Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(0).phase == TouchPhase.Stationary));
-        bool inputUp = Input.GetMouseButtonUp(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended);
-
-        Vector2 currentScreenPos = Input.touchCount > 0
-            ? Input.GetTouch(0).position
-            : (Vector2)Input.mousePosition;
-
-        if (inputDown)
+        var pointer = Pointer.current; // mouse, toque ou caneta
+        if (pointer == null)
         {
-            if (TryGetGroundPoint(currentScreenPos, out dragOrigin))
+            isDragging = false;
+            return;
+        }
+
+        Vector2 screenPos = pointer.position.ReadValue();
+
+        // 1) Começou a tocar/clicar
+        if (pointer.press.wasPressedThisFrame)
+        {
+            // Não arrasta a câmera se o toque começou em cima de UI
+            bool overUI = EventSystem.current != null &&
+                          EventSystem.current.IsPointerOverGameObject();
+
+            if (!overUI && TryGetGroundPoint(screenPos, out dragOrigin))
                 isDragging = true;
         }
 
-        if (inputHeld && isDragging)
-        {
-            if (TryGetGroundPoint(currentScreenPos, out Vector3 currentWorldPos))
-            {
-                Vector3 difference = dragOrigin - currentWorldPos;
-                difference.y = 0f; // nunca muda a altura da câmera
-
-                Vector3 targetPosition = transform.position + difference;
-                targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
-                targetPosition.z = Mathf.Clamp(targetPosition.z, minZ, maxZ);
-
-                transform.position = targetPosition;
-            }
-        }
-
-        if (inputUp)
+        // 2) Soltou (ou perdeu o ponteiro por qualquer motivo)
+        if (!pointer.press.isPressed)
         {
             isDragging = false;
+            return;
+        }
+
+        // 3) Arrastando
+        if (isDragging && TryGetGroundPoint(screenPos, out Vector3 currentWorldPos))
+        {
+            Vector3 difference = dragOrigin - currentWorldPos;
+            difference.y = 0f; // nunca muda a altura da câmera
+
+            Vector3 targetPosition = transform.position + difference;
+            targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
+            targetPosition.z = Mathf.Clamp(targetPosition.z, minZ, maxZ);
+
+            transform.position = targetPosition;
         }
     }
 }

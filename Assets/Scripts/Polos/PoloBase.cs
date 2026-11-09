@@ -116,7 +116,7 @@ public abstract class PoloBase : MonoBehaviour
         trashGenerator?.OnClick();
         OnClickEffect();
         AdvanceTime((float)ReductionPerClick);
-        FloatingTextSpawner.Instance.SpawnAtUI(ReductionPerClick, (RectTransform)transform, "second");
+        FloatingTextSpawner.Instance.SpawnAtWorld(ReductionPerClick, transform.position, "second");
     }
  
     // Efeito extra do clique (ex.: dinheiro por clique no comercial).
