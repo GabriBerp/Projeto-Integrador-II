@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,40 +8,85 @@ public class CameraController : MonoBehaviour
 {
     [Header("Configurações de Movimento")]
     [SerializeField] private string boundaryTag = "Boundary";
-    [SerializeField] private float groundHeight = 0f; // altura (Y) do chão
+    [SerializeField] private float groundHeight = 0f;
 
     [Header("Configurações de Zoom")]
-    // Perspectiva: altura da câmera acima do chão. Ortográfica: orthographicSize.
-    [SerializeField] private float minZoom = 5f;
-    [SerializeField] private float maxZoom = 30f;
-    [SerializeField] private float scrollStep = 0.1f;       // 10% por "clique" da roda
-    [SerializeField] private float pinchSensitivity = 1f;   // >1 deixa a pinça mais agressiva
+    [Tooltip("Menor valor = mais perto. 0.3 significa 30% do campo de visão inicial.")]
+    [SerializeField] private float minZoomFactor = 0.3f;
+    [Tooltip("1 = não afasta além do enquadramento inicial.")]
+    [SerializeField] private float maxZoomFactor = 1f;
+    [Tooltip("Fração de zoom aplicada por 'clique' da roda do mouse.")]
+    [SerializeField] private float scrollStep = 0.1f;
+
+    [Header("Diagnóstico")]
+    [Tooltip("Loga no Console o nome do objeto de UI que bloqueou o arrasto/zoom.")]
+    [SerializeField] private bool logUIBlocking = false;
 
     private Camera cam;
     private Plane groundPlane;
     private Vector3 dragOrigin;
-    private bool isDragging = false;
+    private bool isDragging;
+    // Fica true até soltar todos os dedos/botão: impede que um gesto iniciado
+    // sobre UI, ou o dedo que sobrou depois de uma pinça, comece a arrastar a câmera
+    private bool dragBlocked;
 
     private float minX, maxX, minZ, maxZ;
+    private float baseZoomValue;
+    private float zoomFactor = 1f;
+
+    private readonly List<TouchControl> activeTouches = new List<TouchControl>(4);
+    private readonly List<RaycastResult> uiHits = new List<RaycastResult>(8);
+    private PointerEventData uiPointer;
 
     void Start()
     {
         cam = Camera.main;
         groundPlane = new Plane(Vector3.up, new Vector3(0f, groundHeight, 0f));
+        baseZoomValue = cam.orthographic ? cam.orthographicSize : cam.fieldOfView;
         CalculateBoundaries();
+    }
+
+    void OnDisable() => ResetDrag();
+
+    // Ao perder o foco (ex: clicar no Editor) o release do mouse pode nunca chegar
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus) ResetDrag();
     }
 
     void Update()
     {
-        // Durante a pinça o arrasto é cancelado para a câmera não "pular" ao soltar um dedo
-        if (HandlePinch())
+        CollectActiveTouches();
+
+        if (activeTouches.Count >= 2)
         {
+            HandlePinch(activeTouches[0], activeTouches[1]);
             isDragging = false;
+            dragBlocked = true;
             return;
         }
 
-        HandleScroll();
-        HandleDrag();
+        if (activeTouches.Count == 1)
+        {
+            UpdateDrag(true, activeTouches[0].position.ReadValue());
+            return;
+        }
+
+        var mouse = Mouse.current;
+        if (mouse == null)
+        {
+            UpdateDrag(false, Vector2.zero);
+            return;
+        }
+
+        HandleScroll(mouse);
+        UpdateDrag(mouse.leftButton.isPressed, mouse.position.ReadValue());
+    }
+
+    private void ResetDrag()
+    {
+        isDragging = false;
+        dragBlocked = false;
     }
 
     private void CalculateBoundaries()
@@ -68,14 +114,72 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private Vector3 ClampToBounds(Vector3 pos)
+    private void CollectActiveTouches()
     {
-        pos.x = Mathf.Clamp(pos.x, minX, maxX);
-        pos.z = Mathf.Clamp(pos.z, minZ, maxZ);
-        return pos;
+        activeTouches.Clear();
+        var touchscreen = Touchscreen.current;
+        if (touchscreen == null) return;
+
+        // Os índices de touches[] são slots, não a ordem dos dedos,
+        // por isso filtramos pelos toques realmente ativos
+        foreach (var t in touchscreen.touches)
+            if (t.isInProgress) activeTouches.Add(t);
     }
 
-    // Ponto do chão que está sob o dedo/mouse
+    // Aplica um multiplicador ao zoom (<1 aproxima, >1 afasta).
+    // Usa FOV/orthographicSize em vez de mover a câmera para não interferir
+    // nos limites X/Z nem na altura da câmera.
+    private void ApplyZoom(float multiplier)
+    {
+        zoomFactor = Mathf.Clamp(zoomFactor * multiplier, minZoomFactor, maxZoomFactor);
+        float value = baseZoomValue * zoomFactor;
+
+        if (cam.orthographic) cam.orthographicSize = value;
+        else cam.fieldOfView = value;
+    }
+
+    private void HandleScroll(Mouse mouse)
+    {
+        float scroll = mouse.scroll.ReadValue().y;
+        if (Mathf.Approximately(scroll, 0f)) return;
+        if (IsOverUI(mouse.position.ReadValue())) return;
+
+        // O valor bruto do scroll varia por plataforma (ex: 120 no Windows),
+        // então só o sinal é usado
+        ApplyZoom(1f - Mathf.Sign(scroll) * scrollStep);
+    }
+
+    private void HandlePinch(TouchControl t0, TouchControl t1)
+    {
+        Vector2 p0 = t0.position.ReadValue();
+        Vector2 p1 = t1.position.ReadValue();
+        float currentDistance = Vector2.Distance(p0, p1);
+        float previousDistance = Vector2.Distance(p0 - t0.delta.ReadValue(),
+                                                  p1 - t1.delta.ReadValue());
+
+        if (previousDistance > 0.01f && currentDistance > 0.01f)
+            ApplyZoom(previousDistance / currentDistance); // dedos se afastam => aproxima
+    }
+
+    // Raycast direto na UI: não depende do ID do ponteiro nem do tipo de input module
+    private bool IsOverUI(Vector2 screenPos)
+    {
+        if (EventSystem.current == null) return false;
+
+        if (uiPointer == null || uiPointer.currentInputModule != EventSystem.current.currentInputModule)
+            uiPointer = new PointerEventData(EventSystem.current);
+
+        uiPointer.position = screenPos;
+        uiHits.Clear();
+        EventSystem.current.RaycastAll(uiPointer, uiHits);
+
+        if (uiHits.Count == 0) return false;
+
+        if (logUIBlocking)
+            Debug.Log($"Input bloqueado pela UI: {uiHits[0].gameObject.name}", uiHits[0].gameObject);
+        return true;
+    }
+
     private bool TryGetGroundPoint(Vector2 screenPos, out Vector3 point)
     {
         Ray ray = cam.ScreenPointToRay(screenPos);
@@ -88,114 +192,36 @@ public class CameraController : MonoBehaviour
         return false;
     }
 
-    // factor < 1 aproxima, factor > 1 afasta
-    private void ApplyZoom(Vector2 screenPos, float factor)
+    private void UpdateDrag(bool pressed, Vector2 screenPos)
     {
-        if (!TryGetGroundPoint(screenPos, out Vector3 anchor)) return;
-
-        if (cam.orthographic)
+        if (!pressed)
         {
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize * factor, minZoom, maxZoom);
-
-            // O size mudou, então o ponto sob o cursor deslizou; compensa movendo a câmera
-            if (TryGetGroundPoint(screenPos, out Vector3 after))
-                transform.position = ClampToBounds(transform.position + (anchor - after));
+            ResetDrag();
             return;
         }
 
-        float height = transform.position.y - groundHeight;
-        if (height <= 0.01f) return;
+        if (dragBlocked) return;
 
-        float newHeight = Mathf.Clamp(height * factor, minZoom, maxZoom);
-        float scale = newHeight / height;
-
-        // Escalar o vetor âncora->câmera mantém o ponto sob o cursor fixo na tela
-        transform.position = ClampToBounds(anchor + (transform.position - anchor) * scale);
-    }
-
-    private void HandleScroll()
-    {
-        var mouse = Mouse.current;
-        if (mouse == null) return;
-
-        float scroll = mouse.scroll.ReadValue().y;
-        if (Mathf.Approximately(scroll, 0f)) return;
-
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
-
-        // Só o sinal importa: o valor bruto da roda varia entre plataformas (1, 120...)
-        ApplyZoom(mouse.position.ReadValue(), 1f - Mathf.Sign(scroll) * scrollStep);
-    }
-
-    // Retorna true enquanto houver dois dedos na tela
-    private bool HandlePinch()
-    {
-        var touchscreen = Touchscreen.current;
-        if (touchscreen == null) return false;
-
-        TouchControl a = null, b = null;
-        foreach (var t in touchscreen.touches)
+        if (!isDragging)
         {
-            if (!t.isInProgress) continue;
-            if (a == null) a = t;
-            else { b = t; break; }
-        }
-        if (b == null) return false;
-
-        Vector2 posA = a.position.ReadValue();
-        Vector2 posB = b.position.ReadValue();
-        Vector2 prevA = posA - a.delta.ReadValue();
-        Vector2 prevB = posB - b.delta.ReadValue();
-
-        float prevDist = Vector2.Distance(prevA, prevB);
-        float currDist = Vector2.Distance(posA, posB);
-
-        if (prevDist > 0.01f && currDist > 0.01f)
-        {
-            // Dedos se afastando (currDist > prevDist) => factor < 1 => aproxima
-            float factor = Mathf.Pow(prevDist / currDist, pinchSensitivity);
-            ApplyZoom((posA + posB) * 0.5f, factor);
-        }
-
-        return true;
-    }
-
-    private void HandleDrag()
-    {
-        var pointer = Pointer.current; // mouse, toque ou caneta
-        if (pointer == null)
-        {
-            isDragging = false;
+            if (IsOverUI(screenPos) || !TryGetGroundPoint(screenPos, out dragOrigin))
+            {
+                dragBlocked = true;
+                return;
+            }
+            isDragging = true;
             return;
         }
 
-        Vector2 screenPos = pointer.position.ReadValue();
+        if (!TryGetGroundPoint(screenPos, out Vector3 currentWorldPos)) return;
 
-        // 1) Começou a tocar/clicar
-        if (pointer.press.wasPressedThisFrame)
-        {
-            // Não arrasta a câmera se o toque começou em cima de UI
-            bool overUI = EventSystem.current != null &&
-                          EventSystem.current.IsPointerOverGameObject();
+        Vector3 difference = dragOrigin - currentWorldPos;
+        difference.y = 0f;
 
-            if (!overUI && TryGetGroundPoint(screenPos, out dragOrigin))
-                isDragging = true;
-        }
+        Vector3 targetPosition = transform.position + difference;
+        targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
+        targetPosition.z = Mathf.Clamp(targetPosition.z, minZ, maxZ);
 
-        // 2) Soltou (ou perdeu o ponteiro por qualquer motivo)
-        if (!pointer.press.isPressed)
-        {
-            isDragging = false;
-            return;
-        }
-
-        // 3) Arrastando
-        if (isDragging && TryGetGroundPoint(screenPos, out Vector3 currentWorldPos))
-        {
-            Vector3 difference = dragOrigin - currentWorldPos;
-            difference.y = 0f; // nunca muda a altura da câmera
-
-            transform.position = ClampToBounds(transform.position + difference);
-        }
+        transform.position = targetPosition;
     }
 }

@@ -54,6 +54,7 @@ public abstract class PoloBase : MonoBehaviour
     [Header("Bloqueio")]
     [SerializeField] protected bool isLocked = false;
     [SerializeField] protected float unlockCost = 50f;
+    private PoloVisual visual;
 
     public bool IsLocked => isLocked;
     public float UnlockCost => unlockCost;
@@ -70,15 +71,24 @@ public abstract class PoloBase : MonoBehaviour
         Level = 1;
     }
 
+    public void SetSelected(bool selected)
+    {
+        if (visual == null) visual = GetComponent<PoloVisual>();
+        if (visual != null) visual.SetSelected(selected);
+    }
+
     public bool TryUnlock()
     {
         if (!CanUnlock()) return false;
 
         GameManager.Instance.money -= unlockCost;
         isLocked = false;
+
+        if (visual == null) visual = GetComponent<PoloVisual>();
+        if (visual != null) visual.Refresh();
         return true;
     }
- 
+    
     protected virtual void Update()
     {
         if (isLocked) return; 

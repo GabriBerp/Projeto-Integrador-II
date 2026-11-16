@@ -139,7 +139,9 @@ public class GameManager : MonoBehaviour
 
     public void SelectPolo(PoloBase polo)
     {
+        if (selectedPolo != null) selectedPolo.SetSelected(false);
         selectedPolo = polo;
+        if (selectedPolo != null) selectedPolo.SetSelected(true);
         RefreshInfoPanel();
     }
 
@@ -147,6 +149,7 @@ public class GameManager : MonoBehaviour
 
     public void CloseInfoPanel()
     {
+        SelectPolo(null); // tira o contorno ao fechar o painel
         if (infoPanelScript != null) infoPanelScript.Hide();
     }
 
