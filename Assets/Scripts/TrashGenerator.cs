@@ -52,6 +52,8 @@ public class TrashGenerator : MonoBehaviour
     public void OnClick()
     {
         if (polo != null && polo.IsLocked) return;
+        GameManager.Instance.trash += 1;
+        FloatingTextSpawner.Instance.SpawnAtWorld(1, polo.transform.position, "trash");
 
         if (_cycletime < cycleMaxTime)
         {

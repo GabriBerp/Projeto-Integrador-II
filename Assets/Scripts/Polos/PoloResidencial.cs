@@ -21,13 +21,11 @@ public class PoloResidencial : PoloBase
         
     }
 
-    /*
     protected override void OnClickEffect()
     {
         float val = 0.5f * (1 + (Level % 5));
         GameManager.Instance.handwork += val;
 
-        FloatingTextSpawner.Instance.SpawnAtUI(val, (RectTransform)transform, "handwork");
+        FloatingTextSpawner.Instance.SpawnAtWorld(val, transform.position, "handwork");
     }
-    */
 }

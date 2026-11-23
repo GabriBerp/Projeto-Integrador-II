@@ -22,7 +22,6 @@ public class PoloComercial : PoloBase
         FloatingTextSpawner.Instance.SpawnAtWorld(AutoProduction * satisfaction, transform.position, "money");
     }
  
-    /*
     protected override void OnClickEffect()
     {
         float val = 0.5f * (1 + (Level % 5));
@@ -31,10 +30,9 @@ public class PoloComercial : PoloBase
             GameManager.Instance.handwork -= val;
             GameManager.Instance.money += MoneyPerClick;
 
-            FloatingTextSpawner.Instance.SpawnAtUI(MoneyPerClick, (RectTransform)transform, "money");
+            FloatingTextSpawner.Instance.SpawnAtWorld(MoneyPerClick, transform.position, "money");
         }
     }
-    */
 
     protected override void OnLevelChanged()
     {

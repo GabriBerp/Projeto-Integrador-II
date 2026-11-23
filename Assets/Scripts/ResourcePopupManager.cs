@@ -20,9 +20,6 @@ public class ResourcePopupManager : MonoBehaviour
     {
         var gm = GameManager.Instance;
         if (gm == null) return;
-
-        Check(ResourceType.Money,    gm.money,    gm.baseMoneyCap,    "Dinheiro no limite! Gaste antes de desperdiçar.");
-        Check(ResourceType.Handwork, gm.handwork, gm.baseHandWorkCap, "Mão de obra no limite! Coloque ela pra trabalhar.");
         Check(ResourceType.Trash,    gm.trash,    gm.baseTrashCap,    "Lixo no limite! Hora de dar um destino a ele.");
     }
 

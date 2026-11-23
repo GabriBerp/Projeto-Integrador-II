@@ -10,16 +10,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private string boundaryTag = "Boundary";
     [SerializeField] private float groundHeight = 0f;
 
-    [Header("Configurações de Zoom")]
-    [Tooltip("Menor valor = mais perto. 0.3 significa 30% do campo de visão inicial.")]
-    [SerializeField] private float minZoomFactor = 0.3f;
-    [Tooltip("1 = não afasta além do enquadramento inicial.")]
-    [SerializeField] private float maxZoomFactor = 1f;
-    [Tooltip("Fração de zoom aplicada por 'clique' da roda do mouse.")]
-    [SerializeField] private float scrollStep = 0.1f;
-
     [Header("Diagnóstico")]
-    [Tooltip("Loga no Console o nome do objeto de UI que bloqueou o arrasto/zoom.")]
+    [Tooltip("Loga no Console o nome do objeto de UI que bloqueou o arrasto.")]
     [SerializeField] private bool logUIBlocking = false;
 
     private Camera cam;
@@ -27,12 +19,10 @@ public class CameraController : MonoBehaviour
     private Vector3 dragOrigin;
     private bool isDragging;
     // Fica true até soltar todos os dedos/botão: impede que um gesto iniciado
-    // sobre UI, ou o dedo que sobrou depois de uma pinça, comece a arrastar a câmera
+    // sobre UI, ou o dedo que sobrou depois de dois dedos na tela, comece a arrastar a câmera
     private bool dragBlocked;
 
     private float minX, maxX, minZ, maxZ;
-    private float baseZoomValue;
-    private float zoomFactor = 1f;
 
     private readonly List<TouchControl> activeTouches = new List<TouchControl>(4);
     private readonly List<RaycastResult> uiHits = new List<RaycastResult>(8);
@@ -42,7 +32,6 @@ public class CameraController : MonoBehaviour
     {
         cam = Camera.main;
         groundPlane = new Plane(Vector3.up, new Vector3(0f, groundHeight, 0f));
-        baseZoomValue = cam.orthographic ? cam.orthographicSize : cam.fieldOfView;
         CalculateBoundaries();
     }
 
@@ -60,7 +49,6 @@ public class CameraController : MonoBehaviour
 
         if (activeTouches.Count >= 2)
         {
-            HandlePinch(activeTouches[0], activeTouches[1]);
             isDragging = false;
             dragBlocked = true;
             return;
@@ -79,7 +67,6 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        HandleScroll(mouse);
         UpdateDrag(mouse.leftButton.isPressed, mouse.position.ReadValue());
     }
 
@@ -124,41 +111,6 @@ public class CameraController : MonoBehaviour
         // por isso filtramos pelos toques realmente ativos
         foreach (var t in touchscreen.touches)
             if (t.isInProgress) activeTouches.Add(t);
-    }
-
-    // Aplica um multiplicador ao zoom (<1 aproxima, >1 afasta).
-    // Usa FOV/orthographicSize em vez de mover a câmera para não interferir
-    // nos limites X/Z nem na altura da câmera.
-    private void ApplyZoom(float multiplier)
-    {
-        zoomFactor = Mathf.Clamp(zoomFactor * multiplier, minZoomFactor, maxZoomFactor);
-        float value = baseZoomValue * zoomFactor;
-
-        if (cam.orthographic) cam.orthographicSize = value;
-        else cam.fieldOfView = value;
-    }
-
-    private void HandleScroll(Mouse mouse)
-    {
-        float scroll = mouse.scroll.ReadValue().y;
-        if (Mathf.Approximately(scroll, 0f)) return;
-        if (IsOverUI(mouse.position.ReadValue())) return;
-
-        // O valor bruto do scroll varia por plataforma (ex: 120 no Windows),
-        // então só o sinal é usado
-        ApplyZoom(1f - Mathf.Sign(scroll) * scrollStep);
-    }
-
-    private void HandlePinch(TouchControl t0, TouchControl t1)
-    {
-        Vector2 p0 = t0.position.ReadValue();
-        Vector2 p1 = t1.position.ReadValue();
-        float currentDistance = Vector2.Distance(p0, p1);
-        float previousDistance = Vector2.Distance(p0 - t0.delta.ReadValue(),
-                                                  p1 - t1.delta.ReadValue());
-
-        if (previousDistance > 0.01f && currentDistance > 0.01f)
-            ApplyZoom(previousDistance / currentDistance); // dedos se afastam => aproxima
     }
 
     // Raycast direto na UI: não depende do ID do ponteiro nem do tipo de input module

@@ -29,7 +29,6 @@ public class PoloReciclagem : PoloBase
         
     }
 
-    /*
     protected override void OnClickEffect()
     {
         float val = 0.5f * (1 + (Level % 5));
@@ -38,8 +37,7 @@ public class PoloReciclagem : PoloBase
             GameManager.Instance.trash -= val;
             GameManager.Instance.money += MoneyPerClick;
 
-            FloatingTextSpawner.Instance.SpawnAtUI(MoneyPerClick, (RectTransform)transform, "money");
+            FloatingTextSpawner.Instance.SpawnAtWorld(MoneyPerClick, transform.position, "money");
         }
     }
-    */
 }
