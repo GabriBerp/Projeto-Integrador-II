@@ -14,7 +14,7 @@ public class TrashGenerator : MonoBehaviour
 
     public int ProductionPerCycle => _baseTrashProduction * (polo != null ? polo.Level : 1);
 
-    public string GetProductionLine() => $"     {ProductionPerCycle} / {cycleMaxTime:0.##} s";
+    public string GetProductionLine() => $"     {ProductionPerCycle}";
 
 
     void Awake() {

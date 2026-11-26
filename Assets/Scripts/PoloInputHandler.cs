@@ -36,27 +36,6 @@ public class PoloInputHandler : MonoBehaviour
             BeginPress(pos);
         }
 
-        // 2) Segurando
-        if (pressActive && pointer.press.isPressed)
-        {
-            // Arrastou demais (ex.: movendo a câmera): cancela clique/hold/fechar
-            if (!dragged && (pos - pressStartPos).sqrMagnitude > moveTolerancePixels * moveTolerancePixels)
-            {
-                dragged = true;
-            }
-
-            if (!dragged && pressedPolo != null && !holdTriggered)
-            {
-                timer += Time.unscaledDeltaTime;
-                if (timer >= holdTime)
-                {
-                    holdTriggered = true;
-                    GameManager.Instance.SelectPolo(pressedPolo);
-                    GameManager.Instance.OpenInfoPanel();
-                }
-            }
-        }
-
         // 3) Soltou
         if (pointer.press.wasReleasedThisFrame)
         {
@@ -90,6 +69,9 @@ public class PoloInputHandler : MonoBehaviour
                 // Clique normal: não virou hold e soltou ainda em cima do mesmo polo
                 if (!holdTriggered && RaycastPolo(screenPos) == pressedPolo)
                     pressedPolo.OnClick();
+                    GameManager.Instance.SelectPolo(pressedPolo);
+                    GameManager.Instance.OpenInfoPanel();
+                    
             }
             else if (pressedOnEmpty)
             {

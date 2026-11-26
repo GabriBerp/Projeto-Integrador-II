@@ -10,9 +10,9 @@ public abstract class PoloBase : MonoBehaviour
     public float CycleMaxTime => cycleMaxTime;
 
     // ---------- Textos para o InfoPanel ----------
-    protected static string FormatMoney(float v, float t)    => $"     {v:0.00} / {t:0.##} s";
-    protected static string FormatHandwork(float v, float t) => $"     {v:0.##} / {t:0.##} s";
-    protected static string FormatTrash(float v, float t)    => $"     {v:0.##} / {t:0.##} s";
+    protected static string FormatMoney(float v, float t)    => $"     {v:0.00}";
+    protected static string FormatHandwork(float v, float t) => $"     {v:0.##}";
+    protected static string FormatTrash(float v, float t)    => $"     {v:0.##}";
 
     // Cada polo descreve a própria produção
     protected abstract string GetProductionLine();
@@ -46,7 +46,7 @@ public abstract class PoloBase : MonoBehaviour
     public float CurrentUpgradeCost => baseUpgradeCost * Mathf.Pow(upgradeCostGrowth, Level - 1);
  
     // Para UI: quanto falta pro fim do ciclo (TR_novo = TR - Δt - RL*K)
-    public float TimeRemaining => Mathf.Max(0f, cycleMaxTime - CycleTime);
+    public float TimeRemaining => CycleTime / cycleMaxTime;
  
     // Mão de obra que este polo consome por ciclo (usado p/ CM_total).
     public virtual int HandworkConsumption => 0;
@@ -69,6 +69,10 @@ public abstract class PoloBase : MonoBehaviour
     protected virtual void Awake()
     {
         Level = 1;
+        if (trashGenerator != null)
+        {
+            trashGenerator.polo = this;
+        }
     }
 
     public void SetSelected(bool selected)

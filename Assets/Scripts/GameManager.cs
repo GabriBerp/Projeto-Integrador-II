@@ -12,7 +12,24 @@ public class GameManager : MonoBehaviour
     public float trash = 0;
     public float lifeQuality = 0;
     public float maxLifeQuality = 100f;
-    public float baseTrashCap = 500f;
+    public float baseTrashCap = 50f;
+    public float TrashCap
+    {
+        get
+        {
+            int level = Reciclagem != null ? Reciclagem.Level : 1;
+
+            // Tier 1 vale até o nível 5; cada tier seguinte dobra o teto (10, 20, 40...)
+            int tier = 1;
+            int limit = 5;
+            while (level > limit)
+            {
+                limit *= 2;
+                tier++;
+            }
+            return baseTrashCap * tier;
+        }
+    }
 
     [Header("UI - ResourcePanel")]
     [SerializeField] private TextMeshProUGUI moneyText;
@@ -24,6 +41,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject infoPanel;
     public PoloBase selectedPolo;
     [SerializeField] private GameObject blockedOverlay;
+    public PoloReciclagem Reciclagem {get; private set;}
 
     [Header("UI - InfoPanel")]
     [SerializeField] private TextMeshProUGUI poloNameText;
@@ -35,6 +53,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Image productionImage1;
     [SerializeField] private Image productionImage2;
     [SerializeField] private Image consumeImage;
+    [SerializeField] private Image productionFillImage;
 
     public Sprite moneyIcon;
     public Sprite handWorkIcon;
@@ -64,12 +83,20 @@ public class GameManager : MonoBehaviour
             lifeQualitySlider.interactable = false;   // jogador não mexe no slider
         }
 
+        if (selectedPolo != null)
+        {
+            selectedPolo.SetSelected(true);
+            Reciclagem = selectedPolo as PoloReciclagem;
+        }
+
         UpdateInfoPanel();
     }
 
-    void Update() {
+    void Update() 
+    {
         UpdateUI();
-        trash = Mathf.Clamp(trash, 0, baseTrashCap);
+        UpdateProductionFill();
+        trash = Mathf.Clamp(trash, 0, TrashCap);
     }
 
     void UpdateUI()
@@ -84,11 +111,24 @@ public class GameManager : MonoBehaviour
             lifeQualitySlider.value = lifeQuality;
     }
 
+    void UpdateProductionFill()
+    {
+        if (productionFillImage == null) return;
+
+        if (selectedPolo == null || selectedPolo.IsLocked)
+        {
+            productionFillImage.fillAmount = 0f;
+            return;
+        }
+
+        productionFillImage.fillAmount = selectedPolo.TimeRemaining;
+    }
+
     void UpdateInfoPanel()
     {
         if (selectedPolo == null || selectedPolo.IsLocked) return;
 
-        poloNameText.text      = selectedPolo.poloName;
+        // poloNameText.text      = selectedPolo.poloName;
         poloLevelText.text     = "Nível " + selectedPolo.Level;
         productionText.text    = selectedPolo.GetProductionText();
         consumeText.text       = selectedPolo.GetConsumptionText();
@@ -164,7 +204,7 @@ public class GameManager : MonoBehaviour
 
         if (locked)
         {
-            poloNameText.text = "";
+            // poloNameText.text = "";
             poloLevelText.text = "";
             productionText.text = "";
             consumeText.text = "";
@@ -177,7 +217,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        poloNameText.text      = polo.poloName;
+        // poloNameText.text      = polo.poloName;
         poloLevelText.text     = "Nível " + polo.Level;
         productionText.text    = polo.GetProductionText();
         consumeText.text       = polo.GetConsumptionText();
