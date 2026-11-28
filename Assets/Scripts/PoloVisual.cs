@@ -22,6 +22,8 @@ public class PoloVisual : MonoBehaviour
     [FormerlySerializedAs("lockHeight")]
     [Tooltip("Distância entre o topo do modelo e a base do indicador.")]
     [SerializeField] private float indicatorHeight = 0.3f;
+    [Tooltip("Material base das peças procedurais (cadeado/seta). Precisa ter _BaseColor ou _Color. Ex.: URP/Unlit ou URP/Lit.")]
+    [SerializeField] private Material indicatorMaterial;
 
     [Header("Seleção")]
     [SerializeField] private Color outlineColor = new Color(1f, 0.85f, 0.2f);
@@ -244,7 +246,18 @@ public class PoloVisual : MonoBehaviour
         r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         r.receiveShadows = false;
 
-        var m = r.material;
+        Material m;
+        if (indicatorMaterial != null)
+        {
+            m = new Material(indicatorMaterial);   // instância própria, para tingir sem afetar os outros
+            r.sharedMaterial = m;
+        }
+        else
+        {
+            Debug.LogWarning($"{name}: indicatorMaterial não atribuído; as peças podem ficar roxas na build.", this);
+            m = r.material;
+        }
+
         int id = GetColorId(m);
         if (id != -1) m.SetColor(id, color);
         return new Slot { material = m, colorId = id, original = color, tintable = tintable };
