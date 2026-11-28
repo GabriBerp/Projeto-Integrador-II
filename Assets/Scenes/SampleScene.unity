@@ -9114,6 +9114,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -9382,6 +9383,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -9548,6 +9550,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -9844,6 +9847,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -9920,6 +9924,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -10027,6 +10032,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -10494,6 +10500,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -10937,6 +10944,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -11013,6 +11021,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -11299,6 +11308,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -11446,6 +11456,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -11622,6 +11633,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -11761,6 +11773,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -11881,6 +11894,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -12045,6 +12059,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -12134,6 +12149,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -12253,6 +12269,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -12337,6 +12354,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -12453,6 +12471,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
@@ -12573,6 +12592,7 @@ MonoBehaviour:
   affordableColor: {r: 0.25, g: 0.9, b: 0.3, a: 1}
   indicatorSize: 5
   indicatorHeight: 0.3
+  indicatorMaterial: {fileID: 2100000, guid: f57fa71d8cd70d649b6d0e2a144beb7e, type: 2}
   outlineColor: {r: 0.9811321, g: 0.9216489, b: 0.66180134, a: 1}
   outlineWidth: 0.25
   outlineMaterial: {fileID: 2100000, guid: 92a60dac2dbd1a546a929bf0b96e77ca, type: 2}
